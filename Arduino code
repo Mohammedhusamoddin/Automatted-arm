@@ -1,0 +1,193 @@
+#include <IRremote.h> // IR library to use IR devices
+
+#define IRPIN A1
+//out put of IR
+#define RotateRight 0xFD609F
+#define RotateLeft 0xFD20DF
+#define forward 0xFD50AF
+#define backward 0xFD10EF
+#define x_axix_foward 0xFD08F7
+#define x_axix_backward 0xFD28D7
+#define y_axix_up 0xFD8877
+#define y_axix_down 0xFDA857
+#define z_axix_inward 0xFD48B7
+#define z_axix_outward 0xFD6897
+#define pich_in 0xFD807F
+#define pich_out 0xFD906F
+
+#define RGR 2 //Right wheel
+#define RGL 3 // Left Wheel
+
+#define LGR 4 //Right wheel
+#define LGL 5 // Left Wheel
+
+#define xR 6 // x axix right
+#define xL 7 // x axix left
+
+#define yR 8 // y axix right
+#define yL 9 // y axix left
+
+#define zR 0 // z axix right
+#define zL 1 // z axix left
+
+#define JAW1 12 // pinch in
+#define JAW 13  // pinch out
+
+IRrecv irrecv(IRPIN); //creating object for library
+decode_results results;
+
+void fforward()
+{
+  digitalWrite(RGR, 1);
+  digitalWrite(RGL, 0);
+  digitalWrite(LGR, 1);
+  digitalWrite(LGL, 0);
+}
+void fbackwards()
+{
+  digitalWrite(RGR, 0);
+  digitalWrite(RGL, 1);
+  digitalWrite(LGR, 0);
+  digitalWrite(LGL, 1);
+}
+void fRotateRight()
+{
+  digitalWrite(RGR, 1);
+  digitalWrite(RGL, 0);
+  digitalWrite(LGR, 0);
+  digitalWrite(LGL, 0);
+}
+void fRotateLeft()
+{
+  digitalWrite(RGR, 0);
+  digitalWrite(RGL, 0);
+  digitalWrite(LGR, 1);
+  digitalWrite(LGL, 0);
+}
+
+void fx_axix_foward()
+{
+  digitalWrite(xR, 1);
+  digitalWrite(xL, 0);
+}
+void fx_axix_backward()
+{
+  digitalWrite(xR, 0);
+  digitalWrite(xL, 1);
+}
+
+void fy_axix_up()
+{
+  digitalWrite(yR, 1);
+  digitalWrite(yL, 0);
+}
+void fy_axix_down()
+{
+  digitalWrite(yR, 0);
+  digitalWrite(yL, 1);
+}
+
+void fz_axix_inward()
+{
+  digitalWrite(zR, HIGH);
+  digitalWrite(zL, LOW);
+}
+void fz_axix_outward()
+{
+  digitalWrite(zR, 0);
+  digitalWrite(zL, 1);
+}
+
+void fpich_in()
+{
+  digitalWrite(JAW1, 1);
+  digitalWrite(JAW, 0);
+}
+void fpich_out()
+{
+  digitalWrite(JAW1, 1);
+  digitalWrite(JAW, 0);
+}
+
+void setup()
+
+{
+  irrecv.enableIRIn(); //starting the IR device
+  Serial.begin(9600);
+  pinMode(RGR, OUTPUT);
+  pinMode(RGL, OUTPUT);
+
+  pinMode(LGR, OUTPUT);
+  pinMode(LGL, OUTPUT);
+
+  pinMode(xR, OUTPUT);
+  pinMode(xL, OUTPUT);
+
+  pinMode(yR, OUTPUT);
+  pinMode(yL, OUTPUT);
+
+  pinMode(zR, OUTPUT);
+  pinMode(zL, OUTPUT);
+
+  pinMode(JAW1, OUTPUT);
+  pinMode(JAW, OUTPUT);
+}
+
+void loop()
+{
+  if (irrecv.decode(&results))
+  {
+    Serial.println(results.value, HEX);
+    irrecv.resume();
+    if(results.value==forward)
+    {
+      fforward();
+    }
+    if(results.value==backward)
+    {
+      fbackwards();
+    }  
+    if(results.value==RotateRight)
+    {
+      fRotateRight();
+    }
+    if(results.value==RotateLeft)
+    {
+      fRotateLeft();
+    }
+    if(results.value==x_axix_foward)
+    {
+      fx_axix_foward();
+    }
+    if(results.value==x_axix_backward)
+    {
+      fx_axix_backward();
+
+    }
+    if(results.value==y_axix_up)
+    {
+      fy_axix_up();
+    }
+    if(results.value==y_axix_down)
+    {
+      fy_axix_down();
+    }
+    if(results.value==z_axix_inward)
+    {
+      fz_axix_inward();
+
+    }
+    if(results.value==z_axix_outward)
+    {
+      fz_axix_outward();
+    }
+    if(results.value==pich_in)
+    {
+      fpich_in();
+    }
+    if(results.value==pich_out)
+    {
+      fpich_out();
+    }
+  }
+}
